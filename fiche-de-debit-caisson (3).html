@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fiche de débit — caisson</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #ece7db;
+    --ink: #292520;
+    --ink-soft: #6b6255;
+    --blue: #2c5f7c;
+    --blue-soft: #dce7ea;
+    --rust: #a8482f;
+    --rust-soft: #f1ddd6;
+    --white: #faf8f3;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', sans-serif;
+    min-height:100vh;
+  }
+  header{
+    padding: 28px 32px 18px;
+    border-bottom: 2px solid var(--ink);
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    flex-wrap:wrap;
+    gap:12px;
+  }
+  header h1{
+    font-family:'Archivo', sans-serif;
+    font-weight:700;
+    font-size: 1.5rem;
+    margin:0;
+    letter-spacing: -0.01em;
+  }
+  header p{
+    margin: 4px 0 0;
+    color: var(--ink-soft);
+    font-size: 0.85rem;
+    max-width: 46ch;
+  }
+  .actions{display:flex; gap:8px;}
+  button{
+    font-family:'Archivo', sans-serif;
+    font-weight:600;
+    font-size: 0.8rem;
+    border: 1.5px solid var(--ink);
+    background: var(--white);
+    color: var(--ink);
+    padding: 9px 14px;
+    cursor:pointer;
+    border-radius: 2px;
+  }
+  button:hover{ background: var(--ink); color: var(--white); }
+  button.primary{ background: var(--blue); border-color: var(--blue); color: var(--white); }
+  button.primary:hover{ background: #234a60; }
+
+  main{
+    display:grid;
+    grid-template-columns: 340px 1fr;
+    gap: 0;
+    align-items:start;
+  }
+  @media (max-width: 880px){
+    main{ grid-template-columns: 1fr; }
+  }
+
+  .panel{
+    padding: 24px 28px 60px;
+    border-right: 2px solid var(--ink);
+    min-height: calc(100vh - 96px);
+  }
+  @media (max-width: 880px){
+    .panel{ border-right:none; border-bottom:2px solid var(--ink); min-height:auto; }
+  }
+
+  fieldset{
+    border:none;
+    border-top: 1px solid #d8d0bd;
+    padding: 16px 0;
+    margin:0;
+  }
+  fieldset:first-of-type{ border-top:none; padding-top:0; }
+  legend{
+    font-family:'Archivo', sans-serif;
+    font-weight:700;
+    font-size: 0.72rem;
+    letter-spacing: 0.02em;
+    color: var(--blue);
+    padding:0;
+    margin-bottom: 10px;
+  }
+  .row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap: 10px;
+    margin-bottom: 9px;
+  }
+  .row label{
+    font-size: 0.82rem;
+    color: var(--ink);
+    flex: 1;
+  }
+  .row .hint{
+    display:block;
+    font-size: 0.72rem;
+    color: var(--ink-soft);
+    margin-top: 1px;
+  }
+  input[type=number], select{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 0.85rem;
+    width: 92px;
+    padding: 5px 7px;
+    border: 1px solid var(--ink-soft);
+    border-radius: 2px;
+    background: var(--white);
+    color: var(--ink);
+  }
+  select{ width: 100%; margin-top:4px; }
+  .row.select-row{ flex-direction:column; align-items:stretch; }
+  .row.select-row label{ margin-bottom:0; }
+  .row.check-row{ justify-content:flex-start; gap:8px; }
+  .row.check-row input{ width:auto; accent-color: var(--blue); }
+
+  .radio-group{ display:flex; gap:16px; margin-bottom:12px; }
+  .radio-group label{ display:flex; align-items:center; gap:6px; font-size:0.85rem; font-weight:600; font-family:'Archivo',sans-serif; cursor:pointer; }
+  .radio-group input{ width:auto; accent-color: var(--blue); }
+
+  .drawer-item{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:7px;
+    font-size:0.82rem;
+  }
+  .drawer-item input{ width:80px; }
+
+  .content{ padding: 24px 32px 60px; }
+  .notice{
+    background: var(--blue-soft);
+    border-left: 3px solid var(--blue);
+    padding: 10px 14px;
+    font-size: 0.78rem;
+    color: #1c3e50;
+    margin-bottom: 20px;
+    max-width: 70ch;
+  }
+
+  table{
+    width:100%;
+    border-collapse: collapse;
+    background: var(--white);
+    font-size: 0.85rem;
+  }
+  thead th{
+    text-align:left;
+    font-family:'Archivo', sans-serif;
+    font-weight:700;
+    font-size: 0.68rem;
+    letter-spacing:0.03em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    border-bottom: 2px solid var(--ink);
+    padding: 8px 10px;
+  }
+  tbody td{
+    padding: 6px 10px;
+    border-bottom: 1px solid #d8d0bd;
+    font-family:'IBM Plex Mono', monospace;
+    vertical-align: middle;
+  }
+  tbody td.designation{ font-family:'IBM Plex Sans', sans-serif; }
+  tbody td select{ font-family:'IBM Plex Sans', sans-serif; font-size:0.8rem; width:100%; margin-top:0; padding:4px 6px; }
+  tbody tr.section-row td{
+    font-family:'Archivo', sans-serif;
+    font-weight:700;
+    font-size: 0.72rem;
+    letter-spacing:0.02em;
+    color: var(--blue);
+    background: var(--blue-soft);
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+  td[contenteditable="true"]{
+    cursor: text;
+    border-bottom: 1px dashed var(--ink-soft);
+  }
+  td[contenteditable="true"]:focus{
+    outline: 2px solid var(--blue);
+    outline-offset: -2px;
+    background: var(--blue-soft);
+  }
+  .edited{ color: var(--rust); }
+  .edited::after{ content: " ✎"; font-size:0.7em; }
+
+  footer.legend-note{
+    margin-top: 18px;
+    font-size: 0.72rem;
+    color: var(--ink-soft);
+    max-width: 70ch;
+  }
+
+  @media print{
+    header .actions, .panel{ display:none; }
+    main{ display:block; }
+    body{ background: white; }
+    .notice{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Fiche de débit — caisson</h1>
+    <p>Dimensions finies en entrée, débit corps + tablettes + portes/tiroirs en sortie. Toute cellule du tableau est modifiable à la main.</p>
+  </div>
+  <div class="actions">
+    <button id="btn-reset">Réinitialiser</button>
+    <button id="btn-csv">Exporter CSV</button>
+    <button id="btn-print" class="primary">Imprimer</button>
+  </div>
+</header>
+
+<main>
+  <div class="panel">
+
+    <fieldset>
+      <legend>Dimensions finies du caisson</legend>
+      <div class="row"><label>Largeur (L)</label><input type="number" id="L" value="800"></div>
+      <div class="row"><label>Hauteur (H)</label><input type="number" id="H" value="720"></div>
+      <div class="row"><label>Profondeur (P)</label><input type="number" id="P" value="500"></div>
+      <div class="row"><label>Épaisseur</label><input type="number" id="epCorps" value="19"></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Assemblage</legend>
+      <div class="row select-row">
+        <label for="sensAssemblage">Sens</label>
+        <select id="sensAssemblage">
+          <option value="montantsPleins">Montants sur Haut/Bas</option>
+          <option value="hautbasPleins">Haut/Bas sur montants</option>
+        </select>
+      </div>
+      <div class="row check-row">
+        <input type="checkbox" id="montantIntermediaire">
+        <label for="montantIntermediaire">Montant intermédiaire (position centrale)</label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Socle</legend>
+      <div class="row check-row">
+        <input type="checkbox" id="socleActif">
+        <label for="socleActif">Ajouter un socle</label>
+      </div>
+      <div class="row" id="row-hauteurSocle" style="display:none;"><label>Hauteur du socle</label><input type="number" id="hauteurSocle" value="100"></div>
+      <div class="row" id="row-nbCotesSocle" style="display:none;"><label>Nombre de côtés</label><input type="number" id="nbCotesSocle" value="2" min="0"></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Fond</legend>
+      <div class="row select-row">
+        <label for="fondType">Type de fond</label>
+        <select id="fondType">
+          <option value="applique">En applique</option>
+          <option value="encastre">Encastré</option>
+          <option value="sans">Sans fond</option>
+        </select>
+      </div>
+      <div class="row" id="row-epFond"><label>Épaisseur du fond</label><input type="number" id="epFond" value="19"></div>
+      <div class="row" id="row-profRainure" style="display:none;"><label>Profondeur de rainure</label><input type="number" id="profRainure" value="8"></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Tablettes</legend>
+      <div class="row"><label>Nombre</label><input type="number" id="nbEtageres" value="1" min="0"></div>
+      <div class="row"><label>Retrait avant</label><input type="number" id="retraitEtagere" value="2"></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Portes ou tiroirs</legend>
+      <div class="radio-group">
+        <label><input type="radio" name="mode" value="portes" checked> Portes</label>
+        <label><input type="radio" name="mode" value="tiroirs"> Tiroirs</label>
+      </div>
+      <span class="hint">Portes et façades 3mm plus petites que les dimensions finies du meuble.</span>
+
+      <div id="tiroir-only">
+        <div class="row" style="margin-top:10px;"><label>Nombre de tiroirs</label><input type="number" id="nbTiroirs" value="1" min="0"></div>
+        <div id="drawer-list"></div>
+        <div class="row select-row" style="margin-top:6px;">
+          <label for="coulisseLongueur">Longueur de coulisse</label>
+          <select id="coulisseLongueur">
+            <option>270</option><option>300</option><option>350</option><option>400</option>
+            <option selected>450</option><option>500</option><option>550</option><option>600</option><option>650</option>
+          </select>
+        </div>
+        <span class="hint">RiexTrack double paroi (Hranipex) — côtés du tiroir assurés par la coulisse, seuls le fond et la façade sont à débiter. Hauteur de coulisse réglable par tiroir ci-dessus.</span>
+        <div class="row" style="margin-top:8px;"><label>Ép. fond tiroir</label><input type="number" id="epFondTiroir" value="16"></div>
+        <div class="row"><label>Ép. façade/arrière</label><input type="number" id="epFaceTiroir" value="16"></div>
+      </div>
+    </fieldset>
+
+  </div>
+
+  <div class="content">
+    <div class="notice">
+      Toutes les formules reposent sur des hypothèses par défaut. Corrige n'importe quelle cellule à la main si ta construction diffère — les cellules modifiées sont repérées en <span class="edited" style="color:var(--rust)">rouge</span> et ne seront pas recalculées tant que tu n'as pas changé les dimensions en entrée.
+    </div>
+    <table id="cutlist">
+      <thead>
+        <tr>
+          <th>Rep.</th>
+          <th>Désignation</th>
+          <th>Qté</th>
+          <th>Long. (mm)</th>
+          <th>Larg. (mm)</th>
+          <th>Ép. (mm)</th>
+          <th>Matière</th>
+        </tr>
+      </thead>
+      <tbody id="cutlist-body"></tbody>
+    </table>
+    <p class="legend-note">Longueur = dimension du fil du bois (sens de la longueur de la pièce). Toutes les cotes sont en millimètres, cotes finies de débit.</p>
+    <p class="legend-note" id="tiroir-note" style="display:none;">Support avant et fixations fournis avec le kit coulisse (voir notice fabricant). La cote de la pièce "arrière" est approximative — à vérifier sur la notice RiexTrack du modèle exact commandé.</p>
+  </div>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+let drawers = [{height: 150, coulisseH: 89}];
+let editedCells = {};
+let matiereSelections = {};
+const MATIERES = ['blanc kaolin', 'blanc alpin', 'vicenza', 'MDF', 'CP', 'autre'];
+const DEFAULT_MATIERE = 'blanc kaolin';
+
+function toLetter(n){
+  let s = '';
+  while(n > 0){
+    n--;
+    s = String.fromCharCode(65 + (n % 26)) + s;
+    n = Math.floor(n / 26);
+  }
+  return s;
+}
+
+function syncDrawersToCount(){
+  const n = Math.max(0, Math.round(num('nbTiroirs')));
+  while(drawers.length < n) drawers.push({height: 150, coulisseH: 89});
+  drawers.length = n;
+}
+
+function renderDrawerList(){
+  const list = $('drawer-list');
+  list.innerHTML = '';
+  drawers.forEach((d, i) => {
+    const row = document.createElement('div');
+    row.className = 'row';
+    row.innerHTML = `
+      <label>Tiroir ${i+1} — H façade</label>
+      <input type="number" value="${d.height}" data-idx="${i}" class="drawer-height">
+    `;
+    list.appendChild(row);
+    const row2 = document.createElement('div');
+    row2.className = 'row select-row';
+    row2.style.marginBottom = '10px';
+    row2.innerHTML = `
+      <label>Tiroir ${i+1} — hauteur de coulisse</label>
+      <select data-idx="${i}" class="drawer-coulisseH">
+        <option value="89" ${d.coulisseH==89?'selected':''}>89 mm</option>
+        <option value="121" ${d.coulisseH==121?'selected':''}>121 mm</option>
+        <option value="185" ${d.coulisseH==185?'selected':''}>185 mm</option>
+        <option value="249" ${d.coulisseH==249?'selected':''}>249 mm</option>
+      </select>
+    `;
+    list.appendChild(row2);
+  });
+  list.querySelectorAll('.drawer-height').forEach(inp => {
+    inp.addEventListener('input', e => {
+      drawers[+e.target.dataset.idx].height = parseFloat(e.target.value) || 0;
+      compute();
+    });
+  });
+  list.querySelectorAll('.drawer-coulisseH').forEach(sel => {
+    sel.addEventListener('change', e => {
+      drawers[+e.target.dataset.idx].coulisseH = parseFloat(e.target.value) || 0;
+      compute();
+    });
+  });
+}
+
+$('nbTiroirs').addEventListener('input', () => {
+  syncDrawersToCount();
+  renderDrawerList();
+  compute();
+});
+
+function num(id){ return parseFloat($(id).value) || 0; }
+
+function updateFondVisibility(){
+  const t = $('fondType').value;
+  $('row-profRainure').style.display = (t === 'encastre') ? 'flex' : 'none';
+  $('row-epFond').style.display = (t === 'sans') ? 'none' : 'flex';
+}
+$('fondType').addEventListener('change', () => { updateFondVisibility(); compute(); });
+
+function updateSocleVisibility(){
+  const on = $('socleActif').checked;
+  $('row-hauteurSocle').style.display = on ? 'flex' : 'none';
+  $('row-nbCotesSocle').style.display = on ? 'flex' : 'none';
+}
+$('socleActif').addEventListener('change', () => { updateSocleVisibility(); compute(); });
+
+function updateModeVisibility(){
+  const mode = document.querySelector('input[name=mode]:checked').value;
+  $('tiroir-only').style.display = (mode === 'tiroirs') ? 'block' : 'none';
+  $('tiroir-note').style.display = (mode === 'tiroirs') ? 'block' : 'none';
+}
+document.querySelectorAll('input[name=mode]').forEach(r => r.addEventListener('change', () => {
+  if(r.value === 'tiroirs' && r.checked){
+    $('nbTiroirs').value = 1;
+    drawers = [{height: 150}];
+    renderDrawerList();
+  }
+  updateModeVisibility();
+  compute();
+}));
+
+function addRow(tbody, {rep, designation, qty, longueur, largeur, ep, key, isSection}){
+  const tr = document.createElement('tr');
+  if(isSection){
+    tr.className = 'section-row';
+    tr.innerHTML = `<td colspan="7">${designation}</td>`;
+    tbody.appendChild(tr);
+    return;
+  }
+  const cell = (val, field) => {
+    const editKey = key + '-' + field;
+    const wasEdited = editedCells[editKey] !== undefined;
+    const displayVal = wasEdited ? editedCells[editKey] : (typeof val === 'number' ? Math.round(val*10)/10 : val);
+    return `<td contenteditable="true" data-key="${editKey}" class="${wasEdited ? 'edited' : ''}">${displayVal}</td>`;
+  };
+  const matiereVal = matiereSelections[key] || DEFAULT_MATIERE;
+  const options = MATIERES.map(m => `<option value="${m}" ${m===matiereVal?'selected':''}>${m}</option>`).join('');
+  tr.innerHTML = `
+    <td>${rep}</td>
+    <td class="designation">${designation}</td>
+    ${cell(qty, 'qty')}
+    ${cell(longueur, 'longueur')}
+    ${cell(largeur, 'largeur')}
+    ${cell(ep, 'ep')}
+    <td><select data-matiere-key="${key}">${options}</select></td>
+  `;
+  tbody.appendChild(tr);
+}
+
+function facadeDims(largeurNominale, hauteurNominale){
+  return { largeur: largeurNominale - 3, hauteur: hauteurNominale - 3 };
+}
+
+function compute(){
+  const L = num('L'), H = num('H'), P = num('P');
+  const epCorps = num('epCorps');
+  const sens = $('sensAssemblage').value;
+  const montantInter = $('montantIntermediaire').checked;
+  const fondType = $('fondType').value;
+  const epFond = num('epFond');
+  const profRainure = num('profRainure');
+
+  let profCorps = P;
+  if(fondType === 'applique') profCorps = P - epFond;
+  const profInterne = (fondType !== 'sans') ? P - epFond : P;
+
+  const tbody = $('cutlist-body');
+  tbody.innerHTML = '';
+  let rep = 1;
+
+  addRow(tbody, {isSection:true, designation:'Corps'});
+
+  if(sens === 'montantsPleins'){
+    addRow(tbody, {rep:toLetter(rep++), key:'montant', designation:'Montant', qty:2, longueur:H, largeur:profCorps, ep:epCorps});
+    addRow(tbody, {rep:toLetter(rep++), key:'hautbas', designation:'Haut/Bas', qty:2, longueur:L-2*epCorps, largeur:profCorps, ep:epCorps});
+  } else {
+    addRow(tbody, {rep:toLetter(rep++), key:'hautbas', designation:'Haut/Bas', qty:2, longueur:L, largeur:profCorps, ep:epCorps});
+    addRow(tbody, {rep:toLetter(rep++), key:'montant', designation:'Montant', qty:2, longueur:H-2*epCorps, largeur:profCorps, ep:epCorps});
+  }
+
+  if(montantInter){
+    addRow(tbody, {rep:toLetter(rep++), key:'montantInter', designation:'Montant intermédiaire', qty:1, longueur:H-2*epCorps, largeur:profInterne, ep:epCorps});
+  }
+
+  if(fondType === 'applique'){
+    addRow(tbody, {rep:toLetter(rep++), key:'fond', designation:'Fond', qty:1, longueur:L, largeur:H, ep:epFond});
+  } else if(fondType === 'encastre'){
+    addRow(tbody, {rep:toLetter(rep++), key:'fond', designation:'Fond', qty:1,
+      longueur:(L-2*epCorps)+2*profRainure,
+      largeur:(H-2*epCorps)+2*profRainure,
+      ep:epFond});
+  }
+
+  const nbCompartments = montantInter ? 2 : 1;
+  const largeurUtile = montantInter ? (L - 3*epCorps)/2 : (L - 2*epCorps);
+  const facadeNominalWidth = montantInter ? (largeurUtile + 1.5*epCorps) : L;
+
+  if($('socleActif').checked){
+    const hauteurSocle = num('hauteurSocle');
+    const nbCotesSocle = num('nbCotesSocle');
+    const profSocle = P - 20;
+    addRow(tbody, {isSection:true, designation:'Socle'});
+    addRow(tbody, {rep:toLetter(rep++), key:'socleAvArr', designation:'Socle — avant/arrière', qty:2, longueur:L, largeur:hauteurSocle, ep:epCorps});
+    if(nbCotesSocle > 0){
+      addRow(tbody, {rep:toLetter(rep++), key:'socleCote', designation:'Socle — côté', qty:nbCotesSocle, longueur:profSocle-2*epCorps, largeur:hauteurSocle, ep:epCorps});
+    }
+    addRow(tbody, {rep:toLetter(rep++), key:'socleBandeau', designation:'Socle — bandeau', qty:1, longueur:hauteurSocle, largeur:L, ep:epCorps});
+  }
+
+  const nbEtageres = num('nbEtageres');
+  if(nbEtageres > 0){
+    const retrait = num('retraitEtagere');
+    addRow(tbody, {isSection:true, designation:'Tablettes'});
+    addRow(tbody, {rep:toLetter(rep++), key:'tablette', designation:'Tablette', qty:nbEtageres*nbCompartments, longueur:largeurUtile, largeur:profInterne-retrait, ep:epCorps});
+  }
+
+  const mode = document.querySelector('input[name=mode]:checked').value;
+
+  if(mode === 'portes'){
+    addRow(tbody, {isSection:true, designation:'Porte'});
+    const f = facadeDims(facadeNominalWidth, H);
+    addRow(tbody, {rep:toLetter(rep++), key:'porte', designation:'Porte', qty:nbCompartments, longueur:f.hauteur, largeur:f.largeur, ep:epCorps});
+  } else {
+    addRow(tbody, {isSection:true, designation:'Tiroirs (coulisse RiexTrack)'});
+    const NL = num('coulisseLongueur');
+    const epFondTiroir = num('epFondTiroir');
+    const epFaceTiroir = num('epFaceTiroir');
+
+    drawers.forEach((d, i) => {
+      const face = facadeDims(facadeNominalWidth, d.height);
+      addRow(tbody, {rep:toLetter(rep++), key:'tiroir'+i+'facade', designation:`Tiroir ${i+1} — façade`, qty:nbCompartments, longueur:face.hauteur, largeur:face.largeur, ep:epFaceTiroir});
+    });
+    drawers.forEach((d, i) => {
+      addRow(tbody, {rep:toLetter(rep++), key:'tiroir'+i+'fond', designation:`Tiroir ${i+1} — fond`, qty:nbCompartments, longueur:NL-20, largeur:largeurUtile-29, ep:epFondTiroir});
+    });
+    drawers.forEach((d, i) => {
+      addRow(tbody, {rep:toLetter(rep++), key:'tiroir'+i+'arriere', designation:`Tiroir ${i+1} — arrière`, qty:nbCompartments, longueur:largeurUtile-42, largeur:d.coulisseH-20, ep:epFaceTiroir});
+    });
+  }
+
+  tbody.querySelectorAll('td[contenteditable="true"]').forEach(td => {
+    td.addEventListener('input', () => {
+      editedCells[td.dataset.key] = td.textContent.trim();
+      td.classList.add('edited');
+    });
+  });
+
+  tbody.querySelectorAll('select[data-matiere-key]').forEach(sel => {
+    sel.addEventListener('change', () => {
+      matiereSelections[sel.dataset.matiereKey] = sel.value;
+    });
+  });
+}
+
+document.querySelectorAll('.panel input, .panel select').forEach(el => {
+  el.addEventListener('input', compute);
+});
+
+$('btn-reset').addEventListener('click', () => {
+  editedCells = {};
+  matiereSelections = {};
+  compute();
+});
+
+$('btn-print').addEventListener('click', () => window.print());
+
+function csvField(v){
+  v = String(v);
+  return /[;,"\n]/.test(v) ? '"' + v.replace(/"/g,'""') + '"' : v;
+}
+
+$('btn-csv').addEventListener('click', () => {
+  // Format compatible avec l'import CSV de cutlistoptimizer.com : Label, Qty, Length, Width, Material, Enabled
+  const rows = [['Label','Qty','Length','Width','Material','Enabled']];
+  document.querySelectorAll('#cutlist-body tr').forEach(tr => {
+    if(tr.classList.contains('section-row')) return;
+    const cells = tr.querySelectorAll('td');
+    const designation = cells[1].textContent.trim();
+    const qty = cells[2].textContent.trim();
+    const longueur = cells[3].textContent.trim();
+    const largeur = cells[4].textContent.trim();
+    const ep = cells[5].textContent.trim();
+    const sel = cells[6].querySelector('select');
+    const matiere = sel ? sel.value : '';
+    rows.push([designation, qty, longueur, largeur, `${matiere} ${ep}mm`.trim(), '1']);
+  });
+  const csv = rows.map(r => r.map(csvField).join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'fiche-de-debit.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+updateFondVisibility();
+updateSocleVisibility();
+updateModeVisibility();
+renderDrawerList();
+compute();
+</script>
+
+</body>
+</html>
